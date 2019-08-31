@@ -133,8 +133,9 @@ extension MainMapViewController{
         if segue.identifier == "goToPinDetail"{
             let vc = segue.destination as! PhotoAlbumViewController
             vc.dataController = dataController
+            
             // Here... How can I send pin data to another view ???
-            ...please check this...
+            
         }
     }
 }
