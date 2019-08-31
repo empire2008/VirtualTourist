@@ -48,6 +48,7 @@ class MainMapViewController: UIViewController, MKMapViewDelegate {
         }
     }
     
+    // Mark: To set location from database to the map
     func loadCurrentCamera(){
         if let cameraPosition = cameraPosition{
             // load last camera from data model
@@ -60,6 +61,7 @@ class MainMapViewController: UIViewController, MKMapViewDelegate {
         }
     }
     
+    // Mark: To load pin data then shows them on the map
     func loadPins(){
         if pins != []{
             for index in 0..<pins.count{
@@ -95,6 +97,7 @@ extension MainMapViewController{
         save()
     }
     
+    // Save the location and zoom level when the camera moved
     func mapViewDidChangeVisibleRegion(_ mapView: MKMapView) {
         let center = mapView.camera.centerCoordinate
         cameraPosition?.lat = center.latitude
@@ -105,6 +108,7 @@ extension MainMapViewController{
         timerToSave()
     }
     
+    // I don't know what it is but when I do like this then annotation do as I expected...
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         let reuseId = "pin"
         annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: reuseId)
@@ -129,7 +133,8 @@ extension MainMapViewController{
         if segue.identifier == "goToPinDetail"{
             let vc = segue.destination as! PhotoAlbumViewController
             vc.dataController = dataController
-            
+            // Here... How can I send pin data to another view ???
+            ...please check this...
         }
     }
 }
