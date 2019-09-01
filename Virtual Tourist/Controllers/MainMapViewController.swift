@@ -20,7 +20,6 @@ class MainMapViewController: UIViewController, MKMapViewDelegate {
     var cameraPosition: Camera?
     var pins: [PinPoint] = []
     var timer = Timer()
-    var selectIndexPath: IndexPath?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -79,6 +78,9 @@ extension MainMapViewController{
     
     // Add tap when hold press
     @objc func addNewPin(gestureReconizer: UILongPressGestureRecognizer){
+        if gestureReconizer.state != .began{
+            return
+        }
         let location = gestureReconizer.location(in: mapView)
         let coordinate = mapView.convert(location, toCoordinateFrom: mapView)
         
@@ -124,7 +126,15 @@ extension MainMapViewController{
     
     // MARK: Event when tapped on pin
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
-        performSegue(withIdentifier: "goToPinDetail", sender: self)
+        guard let annotation = view.annotation else{
+            return
+        }
+        let location = annotation.coordinate
+        let pinPoint = PinPoint(context: dataController.viewContext)
+        pinPoint.lat = location.latitude
+        pinPoint.lon = location.longitude
+        pinPoint.pinName = annotation.title ?? ""
+        performSegue(withIdentifier: "goToPinDetail", sender: pinPoint)
     }
 }
 
@@ -133,9 +143,8 @@ extension MainMapViewController{
         if segue.identifier == "goToPinDetail"{
             let vc = segue.destination as! PhotoAlbumViewController
             vc.dataController = dataController
-            
             // Here... How can I send pin data to another view ???
-            
+            vc.pinPoint = sender as? PinPoint
         }
     }
 }

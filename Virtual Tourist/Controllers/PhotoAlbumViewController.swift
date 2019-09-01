@@ -22,8 +22,24 @@ class PhotoAlbumViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         mapView.isUserInteractionEnabled = false
-
+        
         fetchedPhotos()
+        setupMapView()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        print("photos amount: \(photos.count)")
+    }
+    
+    func setupMapView(){
+        let annotation = MKPointAnnotation()
+        annotation.coordinate = CLLocationCoordinate2D(latitude: pinPoint.lat, longitude: pinPoint.lon)
+        mapView.addAnnotation(annotation)
+        
+        let center = CLLocationCoordinate2D(latitude: pinPoint.lat, longitude: pinPoint.lon)
+        let span = MKCoordinateSpan(latitudeDelta: 0.5, longitudeDelta: 0.5)
+        mapView.setRegion(MKCoordinateRegion(center: center, span: span), animated: false)
     }
     
     fileprivate func fetchedPhotos() {
@@ -97,6 +113,8 @@ extension PhotoAlbumViewController: UIImagePickerControllerDelegate, UINavigatio
                 self.save(imageData: imageData)
             }
         }
+        
+        dismiss(animated: true, completion: nil)
     }
 }
 
