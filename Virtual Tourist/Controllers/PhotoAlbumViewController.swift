@@ -44,7 +44,7 @@ class PhotoAlbumViewController: UIViewController {
     
     fileprivate func fetchedPhotos() {
         let fetchRequest: NSFetchRequest<Gallery> = Gallery.fetchRequest()
-        let predicate = NSPredicate(format: "pinPoint == %@", pinPoint)
+        let predicate = NSPredicate(format: "pinPoint = %@", pinPoint)
         let sortDesciptor = NSSortDescriptor(key: "creationDate", ascending: true)
         fetchRequest.predicate = predicate
         fetchRequest.sortDescriptors = [sortDesciptor]
@@ -92,6 +92,8 @@ class PhotoAlbumViewController: UIViewController {
         let photo = Gallery(context: dataController.viewContext)
         photo.creationDate = Date()
         photo.photo = imageData
+        
+        photo.pinPoint = pinPoint
         
         do{
             try dataController.viewContext.save()

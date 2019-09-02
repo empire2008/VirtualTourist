@@ -19,23 +19,40 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="tNc-d2-Vsh">
-                                <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                                <rect key="frame" x="0.0" y="88" width="414" height="808"/>
                                 <connections>
                                     <outlet property="delegate" destination="BYZ-38-t0r" id="zNe-Sn-wIr"/>
                                 </connections>
                             </mapView>
+                            <navigationBar contentMode="scaleToFill" translucent="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Apa-hu-vrx">
+                                <rect key="frame" x="0.0" y="44" width="414" height="44"/>
+                                <items>
+                                    <navigationItem title="Virtual Tourist" id="2jz-I0-IJw">
+                                        <barButtonItem key="rightBarButtonItem" systemItem="edit" id="G3w-en-TRc">
+                                            <connections>
+                                                <action selector="editButton:" destination="BYZ-38-t0r" id="L9c-eX-guP"/>
+                                            </connections>
+                                        </barButtonItem>
+                                    </navigationItem>
+                                </items>
+                            </navigationBar>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstAttribute="bottom" secondItem="tNc-d2-Vsh" secondAttribute="bottom" id="4RV-0W-aAR"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="tNc-d2-Vsh" secondAttribute="trailing" id="Bth-ZU-g0o"/>
                             <constraint firstItem="tNc-d2-Vsh" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="JKu-BG-Cy7"/>
-                            <constraint firstItem="tNc-d2-Vsh" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="wn3-tR-X6f"/>
+                            <constraint firstItem="Apa-hu-vrx" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="lGi-YZ-IPQ"/>
+                            <constraint firstAttribute="trailing" secondItem="Apa-hu-vrx" secondAttribute="trailing" id="npn-0B-bT6"/>
+                            <constraint firstItem="tNc-d2-Vsh" firstAttribute="top" secondItem="Apa-hu-vrx" secondAttribute="bottom" id="plD-SE-6ot"/>
+                            <constraint firstItem="Apa-hu-vrx" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="t1p-1J-Vfj"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <connections>
+                        <outlet property="editButton" destination="G3w-en-TRc" id="kOs-J6-CEJ"/>
                         <outlet property="mapView" destination="tNc-d2-Vsh" id="IJQ-2d-Aoi"/>
+                        <outlet property="navTitle" destination="2jz-I0-IJw" id="vbI-jB-Dt5"/>
                         <segue destination="Mu9-7i-GtY" kind="show" identifier="goToPinDetail" id="ib5-4d-omW"/>
                     </connections>
                 </viewController>
@@ -52,7 +69,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="Dlw-gJ-gsX">
-                                <rect key="frame" x="0.0" y="268" width="414" height="545"/>
+                                <rect key="frame" x="10" y="278" width="394" height="535"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="YPy-Ww-z1f">
                                     <size key="itemSize" width="50" height="50"/>
@@ -123,16 +140,16 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="1Pi-v3-i7H" firstAttribute="trailing" secondItem="90l-jX-ZTg" secondAttribute="trailing" id="0Sn-Pp-aEL"/>
-                            <constraint firstItem="Dlw-gJ-gsX" firstAttribute="leading" secondItem="90l-jX-ZTg" secondAttribute="leading" id="7pK-kw-7gk"/>
+                            <constraint firstItem="Dlw-gJ-gsX" firstAttribute="leading" secondItem="90l-jX-ZTg" secondAttribute="leading" constant="10" id="7pK-kw-7gk"/>
                             <constraint firstItem="hDJ-RS-yyC" firstAttribute="trailing" secondItem="90l-jX-ZTg" secondAttribute="trailing" id="8QM-d9-Ors"/>
-                            <constraint firstItem="Dlw-gJ-gsX" firstAttribute="top" secondItem="l6W-iw-7To" secondAttribute="bottom" id="9Tc-TI-s7A"/>
+                            <constraint firstItem="Dlw-gJ-gsX" firstAttribute="top" secondItem="l6W-iw-7To" secondAttribute="bottom" constant="10" id="9Tc-TI-s7A"/>
                             <constraint firstItem="1Pi-v3-i7H" firstAttribute="leading" secondItem="90l-jX-ZTg" secondAttribute="leading" id="Lgf-29-Iqw"/>
                             <constraint firstItem="l6W-iw-7To" firstAttribute="leading" secondItem="90l-jX-ZTg" secondAttribute="leading" id="Pa8-u2-WUO"/>
                             <constraint firstItem="hDJ-RS-yyC" firstAttribute="leading" secondItem="90l-jX-ZTg" secondAttribute="leading" id="Pq3-R3-dt4"/>
                             <constraint firstItem="1Pi-v3-i7H" firstAttribute="bottom" secondItem="90l-jX-ZTg" secondAttribute="bottom" id="Z9Q-pK-Kmb"/>
                             <constraint firstItem="l6W-iw-7To" firstAttribute="top" secondItem="hDJ-RS-yyC" secondAttribute="bottom" id="dSl-la-DiN"/>
                             <constraint firstItem="90l-jX-ZTg" firstAttribute="trailing" secondItem="l6W-iw-7To" secondAttribute="trailing" id="rA4-IK-aU0"/>
-                            <constraint firstItem="90l-jX-ZTg" firstAttribute="trailing" secondItem="Dlw-gJ-gsX" secondAttribute="trailing" id="siO-2y-HkC"/>
+                            <constraint firstItem="90l-jX-ZTg" firstAttribute="trailing" secondItem="Dlw-gJ-gsX" secondAttribute="trailing" constant="10" id="siO-2y-HkC"/>
                             <constraint firstItem="hDJ-RS-yyC" firstAttribute="top" secondItem="90l-jX-ZTg" secondAttribute="top" id="sjN-R0-Zf0"/>
                             <constraint firstItem="1Pi-v3-i7H" firstAttribute="top" secondItem="Dlw-gJ-gsX" secondAttribute="bottom" id="zF1-Oj-upE"/>
                         </constraints>
@@ -145,7 +162,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="hfw-an-ifu" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1237.68115942029" y="116.51785714285714"/>
+            <point key="canvasLocation" x="919" y="117"/>
         </scene>
     </scenes>
 </document>

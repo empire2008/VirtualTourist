@@ -12,7 +12,11 @@ import CoreData
 
 class MainMapViewController: UIViewController, MKMapViewDelegate {
 
+    @IBOutlet weak var editButton: UIBarButtonItem!
     @IBOutlet weak var mapView: MKMapView!
+    @IBOutlet weak var navTitle: UINavigationItem!
+    
+    var isEditActive = false
     
     var dataController: DataController!
     var annotationView: MKAnnotationView?
@@ -72,6 +76,23 @@ class MainMapViewController: UIViewController, MKMapViewDelegate {
             mapView.addAnnotations(annotations)
         }
     }
+    
+    func editUI(isOnEditMode: Bool){
+        if isOnEditMode{
+            self.navTitle.title = "Select Pin to Delete"
+            self.editButton.title = "Cancel"
+        }
+        else{
+            self.navTitle.title = "Virtual Tourist"
+            self.editButton.title = "Edit"
+        }
+    }
+    
+    @IBAction func editButton(_ sender: Any) {
+        isEditActive = !isEditActive
+        print(isEditActive)
+        editUI(isOnEditMode: isEditActive)
+    }
 }
 
 extension MainMapViewController{
@@ -95,8 +116,16 @@ extension MainMapViewController{
         let pin = PinPoint(context: dataController.viewContext)
         pin.lat = annotation.coordinate.latitude
         pin.lon = annotation.coordinate.longitude
-        
+        pins.append(pin)
         save()
+    }
+    
+    func removePin(annotation: MKAnnotation){
+        // do remove pin
+        mapView.removeAnnotation(annotation)
+        
+        // do delete data
+        
     }
     
     // Save the location and zoom level when the camera moved
@@ -126,15 +155,24 @@ extension MainMapViewController{
     
     // MARK: Event when tapped on pin
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
-        guard let annotation = view.annotation else{
-            return
+        if isEditActive{
+            // Do remove a pin
+            if let annotation = view.annotation{
+                removePin(annotation: annotation)
+            }
         }
-        let location = annotation.coordinate
-        let pinPoint = PinPoint(context: dataController.viewContext)
-        pinPoint.lat = location.latitude
-        pinPoint.lon = location.longitude
-        pinPoint.pinName = annotation.title ?? ""
-        performSegue(withIdentifier: "goToPinDetail", sender: pinPoint)
+        else{
+            // Do add a new pin
+            guard let annotation = view.annotation else{
+                return
+            }
+            let location = annotation.coordinate
+            let selectedPinPoint = pins.first { pin in
+                pin.lat == location.latitude && pin.lon == location.longitude
+            }
+            
+            performSegue(withIdentifier: "goToPinDetail", sender: selectedPinPoint)
+        }
     }
 }
 
@@ -143,7 +181,6 @@ extension MainMapViewController{
         if segue.identifier == "goToPinDetail"{
             let vc = segue.destination as! PhotoAlbumViewController
             vc.dataController = dataController
-            // Here... How can I send pin data to another view ???
             vc.pinPoint = sender as? PinPoint
         }
     }
