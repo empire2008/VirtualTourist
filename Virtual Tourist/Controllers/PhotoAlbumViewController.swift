@@ -25,9 +25,25 @@ class PhotoAlbumViewController: UIViewController {
         fetchedPhotos()
         setupMapView()
         
-        if photos == nil{
-            
+        AppClient.requestPhoto(bbox: "23.33,37.74,24.42,38.8", complition: handlePhotosResponse(photoResponse:error:))
+    }
+    
+    func handlePhotosResponse(photoResponse: PhotoResponse?, error: Error?){
+        if let photoResponse = photoResponse{
+            print("Hello: \(photoResponse)")
         }
+        else{
+            print("Error: \(error)")
+        }
+    }
+    
+    func boxAreaToString(lat: Double, lon: Double, area: Double) -> String{
+        let minLat = lat - area
+        let maxLat = lat + area
+        let minLon = lon - area
+        let maxLon = lon + area
+        
+        return "\(minLon),\(minLat),\(maxLon),\(maxLat)"
     }
     
     override func viewWillAppear(_ animated: Bool) {

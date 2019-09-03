@@ -18,6 +18,7 @@
 		8D9384112316A355002027B9 /* VirtualTourist.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 8D93840F2316A355002027B9 /* VirtualTourist.xcdatamodeld */; };
 		8DFDC70E231E00B500AFFC68 /* AppClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DFDC70D231E00B500AFFC68 /* AppClient.swift */; };
 		8DFDC711231E12BC00AFFC68 /* PhotoResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DFDC710231E12BC00AFFC68 /* PhotoResponse.swift */; };
+		8DFDC714231E84C600AFFC68 /* PhotoSearchRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DFDC713231E84C600AFFC68 /* PhotoSearchRequest.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -34,6 +35,7 @@
 		8D9384102316A355002027B9 /* VirtualTourist.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = VirtualTourist.xcdatamodel; sourceTree = "<group>"; };
 		8DFDC70D231E00B500AFFC68 /* AppClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppClient.swift; sourceTree = "<group>"; };
 		8DFDC710231E12BC00AFFC68 /* PhotoResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoResponse.swift; sourceTree = "<group>"; };
+		8DFDC713231E84C600AFFC68 /* PhotoSearchRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoSearchRequest.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -98,7 +100,8 @@
 		8D4546992314D1C500DF7CCA /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				8DFDC70F231E12A700AFFC68 /* Response */,
+				8DFDC712231E84B000AFFC68 /* Requests */,
+				8DFDC70F231E12A700AFFC68 /* Responses */,
 				8D4546A72315825A00DF7CCA /* DataController.swift */,
 				8D93840F2316A355002027B9 /* VirtualTourist.xcdatamodeld */,
 				8DFDC70D231E00B500AFFC68 /* AppClient.swift */,
@@ -114,12 +117,20 @@
 			path = Assets;
 			sourceTree = "<group>";
 		};
-		8DFDC70F231E12A700AFFC68 /* Response */ = {
+		8DFDC70F231E12A700AFFC68 /* Responses */ = {
 			isa = PBXGroup;
 			children = (
 				8DFDC710231E12BC00AFFC68 /* PhotoResponse.swift */,
 			);
-			path = Response;
+			path = Responses;
+			sourceTree = "<group>";
+		};
+		8DFDC712231E84B000AFFC68 /* Requests */ = {
+			isa = PBXGroup;
+			children = (
+				8DFDC713231E84C600AFFC68 /* PhotoSearchRequest.swift */,
+			);
+			path = Requests;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -199,6 +210,7 @@
 				8D45469E2315139500DF7CCA /* MainMapViewController.swift in Sources */,
 				8D4546832314D11500DF7CCA /* AppDelegate.swift in Sources */,
 				8DFDC70E231E00B500AFFC68 /* AppClient.swift in Sources */,
+				8DFDC714231E84C600AFFC68 /* PhotoSearchRequest.swift in Sources */,
 				8D4546A223152B9400DF7CCA /* PhotoAlbumViewController.swift in Sources */,
 				8DFDC711231E12BC00AFFC68 /* PhotoResponse.swift in Sources */,
 			);

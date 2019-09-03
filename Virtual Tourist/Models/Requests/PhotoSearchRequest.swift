@@ -1,5 +1,5 @@
 //
-//  PhotoResponse.swift
+//  PhotoSearchRequest.swift
 //  Virtual Tourist
 //
 //  Created by SpaCE_MAC on 3/9/2562 BE.
@@ -8,6 +8,6 @@
 
 import Foundation
 
-struct PhotoResponse: Codable{
-    let 
+struct PhotoSearchRequest:Codable {
+    let bbox: String
 }

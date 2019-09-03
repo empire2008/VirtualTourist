@@ -16,11 +16,11 @@ class AppClient {
     }
     
     enum Endpoint {
-        case photosGeo(String, String)
+        case photosGeo
         
         var stringValue: String{
             switch self {
-            case .photosGeo(let lat, let lon): return "\(Auth.baseApi)?method=flickr.photos.geo.photosForLocation&api_key=\(Auth.key)&lat=\(lat)&lon=\(lon)"
+            case .photosGeo: return "\(Auth.baseApi)?method=flickr.photos.search&api_key=\(Auth.key)"
             }
         }
         
@@ -29,7 +29,35 @@ class AppClient {
         }
     }
     
-    class func requestPhoto(lat: String, lon: String, complition: @escaping ())
+    class func requestPhoto(bbox: String, complition: @escaping (PhotoResponse?, Error?) -> Void){
+        let photoRequest = PhotoSearchRequest(bbox: bbox)
+        let body = try? JSONEncoder().encode(photoRequest)
+        
+        var request = URLRequest(url: Endpoint.photosGeo.url)
+        request.httpMethod = "POST"
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpBody = body
+        
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+            guard let data = data else{
+                DispatchQueue.main.async {
+                    complition(nil, error)
+                }
+                return
+            }
+            do{
+                let responseObject = try JSONDecoder().decode(PhotoResponse.self, from: data)
+                DispatchQueue.main.async {
+                    complition(responseObject,nil)
+                }
+            }
+            catch{
+                complition(nil, error)
+            }
+            
+        }
+        task.resume()
+    }
 }
 
 
