@@ -10,6 +10,8 @@ import UIKit
 import MapKit
 import CoreData
 
+
+
 class MainMapViewController: UIViewController, MKMapViewDelegate {
 
     @IBOutlet weak var editButton: UIBarButtonItem!
@@ -21,27 +23,18 @@ class MainMapViewController: UIViewController, MKMapViewDelegate {
     var dataController: DataController!
     var annotationView: MKAnnotationView?
     var annotations: [MKAnnotation] = []
-    var cameraPosition: Camera?
+    var cameraPosition = CameraLocation()
     var pins: [PinPoint] = []
     var timer = Timer()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        fetchCamera()
+//        fetchCamera()
         fetchPins()
         let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(addNewPin))
         mapView.addGestureRecognizer(longPressGesture)
         loadCurrentCamera()
         loadPins()
-    }
-    
-    fileprivate func fetchCamera() {
-        let fetchRequest: NSFetchRequest<Camera> = Camera.fetchRequest()
-        if let result = try? dataController.viewContext.fetch(fetchRequest){
-            if !result.isEmpty{
-                cameraPosition = result[0]
-            }
-        }
     }
     
     func fetchPins(){
@@ -53,15 +46,15 @@ class MainMapViewController: UIViewController, MKMapViewDelegate {
     
     // Mark: To set location from database to the map
     func loadCurrentCamera(){
-        if let cameraPosition = cameraPosition{
-            // load last camera from data model
-            let center = CLLocationCoordinate2D(latitude: cameraPosition.lat, longitude: cameraPosition.lon)
-            let span = MKCoordinateSpan.init(latitudeDelta: cameraPosition.latDelta, longitudeDelta: cameraPosition.lonDelta)
-            mapView.setRegion(MKCoordinateRegion.init(center: center, span: span), animated: false)
-        }
-        else{
-            cameraPosition = Camera(context: dataController.viewContext)
-        }
+        cameraPosition.lat = UserDefaults.standard.getLatitude()
+        cameraPosition.lon = UserDefaults.standard.getLongitude()
+        cameraPosition.latDelta = UserDefaults.standard.getLatDelta()
+        cameraPosition.lonDelta = UserDefaults.standard.getLonDelta()
+        
+        // load last camera from data model
+        let center = CLLocationCoordinate2D(latitude: cameraPosition.lat, longitude: cameraPosition.lon)
+        let span = MKCoordinateSpan.init(latitudeDelta: cameraPosition.latDelta, longitudeDelta: cameraPosition.lonDelta)
+        mapView.setRegion(MKCoordinateRegion.init(center: center, span: span), animated: false)
     }
     
     // Mark: To load pin data then shows them on the map
@@ -142,10 +135,10 @@ extension MainMapViewController{
     // Save the location and zoom level when the camera moved
     func mapViewDidChangeVisibleRegion(_ mapView: MKMapView) {
         let center = mapView.camera.centerCoordinate
-        cameraPosition?.lat = center.latitude
-        cameraPosition?.lon = center.longitude
-        cameraPosition?.latDelta = mapView.region.span.latitudeDelta
-        cameraPosition?.lonDelta = mapView.region.span.longitudeDelta
+        cameraPosition.lat = center.latitude
+        cameraPosition.lon = center.longitude
+        cameraPosition.latDelta = mapView.region.span.latitudeDelta
+        cameraPosition.lonDelta = mapView.region.span.longitudeDelta
         
         timerToSave()
     }
@@ -206,6 +199,9 @@ extension MainMapViewController{
     }
     
     @objc func save(){
-        self.dataController.saveContext()
+        UserDefaults.standard.setLatitude(value: cameraPosition.lat)
+        UserDefaults.standard.setLongitude(value: cameraPosition.lon)
+        UserDefaults.standard.setLatDelta(value: cameraPosition.latDelta)
+        UserDefaults.standard.setLonDelta(value: cameraPosition.lonDelta)
     }
 }
