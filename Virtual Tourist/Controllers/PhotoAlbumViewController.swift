@@ -22,9 +22,12 @@ class PhotoAlbumViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         mapView.isUserInteractionEnabled = false
-        
         fetchedPhotos()
         setupMapView()
+        
+        if photos == nil{
+            
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -120,7 +123,7 @@ extension PhotoAlbumViewController: UIImagePickerControllerDelegate, UINavigatio
     }
 }
 
-extension PhotoAlbumViewController: UICollectionViewDelegate, UICollectionViewDataSource{
+extension PhotoAlbumViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout{
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return photos.count
     }
@@ -131,5 +134,18 @@ extension PhotoAlbumViewController: UICollectionViewDelegate, UICollectionViewDa
             cell.image.image = UIImage(data: imageData)
         }
         return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let size = (collectionView.frame.width / 3) - 4
+        return CGSize(width: size, height: size)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return 4
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        return 0
     }
 }

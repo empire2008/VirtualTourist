@@ -121,10 +121,21 @@ extension MainMapViewController{
     }
     
     func removePin(annotation: MKAnnotation){
+        // do delete data
+        let location = annotation.coordinate
+        let selectedPinPoint = pins.first { pin in
+            pin.lat == location.latitude && pin.lon == location.longitude
+        }
+        for index in 0..<pins.count{
+            if pins[index] == selectedPinPoint{
+                dataController.viewContext.delete(pins[index])
+                dataController.saveContext()
+                pins.remove(at: index)
+                break
+            }
+        }
         // do remove pin
         mapView.removeAnnotation(annotation)
-        
-        // do delete data
         
     }
     

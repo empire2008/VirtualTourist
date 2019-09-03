@@ -69,7 +69,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="Dlw-gJ-gsX">
-                                <rect key="frame" x="10" y="278" width="394" height="535"/>
+                                <rect key="frame" x="0.0" y="278" width="414" height="535"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="YPy-Ww-z1f">
                                     <size key="itemSize" width="50" height="50"/>
@@ -116,7 +116,7 @@
                                 <rect key="frame" x="0.0" y="44" width="414" height="44"/>
                                 <items>
                                     <navigationItem title="Title" id="JH9-Zg-0Ap">
-                                        <barButtonItem key="leftBarButtonItem" systemItem="undo" id="dGD-XS-3tS">
+                                        <barButtonItem key="leftBarButtonItem" title="Back" style="done" id="dGD-XS-3tS">
                                             <connections>
                                                 <action selector="backButton:" destination="Mu9-7i-GtY" id="eqG-2f-dEP"/>
                                             </connections>
@@ -140,7 +140,7 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="1Pi-v3-i7H" firstAttribute="trailing" secondItem="90l-jX-ZTg" secondAttribute="trailing" id="0Sn-Pp-aEL"/>
-                            <constraint firstItem="Dlw-gJ-gsX" firstAttribute="leading" secondItem="90l-jX-ZTg" secondAttribute="leading" constant="10" id="7pK-kw-7gk"/>
+                            <constraint firstItem="Dlw-gJ-gsX" firstAttribute="leading" secondItem="90l-jX-ZTg" secondAttribute="leading" id="7pK-kw-7gk"/>
                             <constraint firstItem="hDJ-RS-yyC" firstAttribute="trailing" secondItem="90l-jX-ZTg" secondAttribute="trailing" id="8QM-d9-Ors"/>
                             <constraint firstItem="Dlw-gJ-gsX" firstAttribute="top" secondItem="l6W-iw-7To" secondAttribute="bottom" constant="10" id="9Tc-TI-s7A"/>
                             <constraint firstItem="1Pi-v3-i7H" firstAttribute="leading" secondItem="90l-jX-ZTg" secondAttribute="leading" id="Lgf-29-Iqw"/>
@@ -149,7 +149,7 @@
                             <constraint firstItem="1Pi-v3-i7H" firstAttribute="bottom" secondItem="90l-jX-ZTg" secondAttribute="bottom" id="Z9Q-pK-Kmb"/>
                             <constraint firstItem="l6W-iw-7To" firstAttribute="top" secondItem="hDJ-RS-yyC" secondAttribute="bottom" id="dSl-la-DiN"/>
                             <constraint firstItem="90l-jX-ZTg" firstAttribute="trailing" secondItem="l6W-iw-7To" secondAttribute="trailing" id="rA4-IK-aU0"/>
-                            <constraint firstItem="90l-jX-ZTg" firstAttribute="trailing" secondItem="Dlw-gJ-gsX" secondAttribute="trailing" constant="10" id="siO-2y-HkC"/>
+                            <constraint firstItem="90l-jX-ZTg" firstAttribute="trailing" secondItem="Dlw-gJ-gsX" secondAttribute="trailing" id="siO-2y-HkC"/>
                             <constraint firstItem="hDJ-RS-yyC" firstAttribute="top" secondItem="90l-jX-ZTg" secondAttribute="top" id="sjN-R0-Zf0"/>
                             <constraint firstItem="1Pi-v3-i7H" firstAttribute="top" secondItem="Dlw-gJ-gsX" secondAttribute="bottom" id="zF1-Oj-upE"/>
                         </constraints>
@@ -162,7 +162,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="hfw-an-ifu" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="919" y="117"/>
+            <point key="canvasLocation" x="918.84057971014499" y="116.51785714285714"/>
         </scene>
     </scenes>
 </document>
