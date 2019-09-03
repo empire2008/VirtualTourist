@@ -20,6 +20,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         dataController.load()
         
+        print("\(UserDefaults.standard.getLatitude()) \(UserDefaults.standard.getLongitude()) \(UserDefaults.standard.getLatDelta()) \(UserDefaults.standard.getLonDelta()))")
         let mainStoryboard = UIStoryboard(name: "Main", bundle: nil)
         let viewController = mainStoryboard.instantiateViewController(withIdentifier: "MainMapViewController") as! MainMapViewController
         viewController.dataController = dataController

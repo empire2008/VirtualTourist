@@ -10,8 +10,6 @@ import UIKit
 import MapKit
 import CoreData
 
-
-
 class MainMapViewController: UIViewController, MKMapViewDelegate {
 
     @IBOutlet weak var editButton: UIBarButtonItem!
@@ -26,15 +24,16 @@ class MainMapViewController: UIViewController, MKMapViewDelegate {
     var cameraPosition = CameraLocation()
     var pins: [PinPoint] = []
     var timer = Timer()
+    var isMapReady = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
-//        fetchCamera()
         fetchPins()
-        let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(addNewPin))
-        mapView.addGestureRecognizer(longPressGesture)
         loadCurrentCamera()
         loadPins()
+        
+        let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(addNewPin))
+        mapView.addGestureRecognizer(longPressGesture)
     }
     
     func fetchPins(){
@@ -199,9 +198,14 @@ extension MainMapViewController{
     }
     
     @objc func save(){
-        UserDefaults.standard.setLatitude(value: cameraPosition.lat)
-        UserDefaults.standard.setLongitude(value: cameraPosition.lon)
-        UserDefaults.standard.setLatDelta(value: cameraPosition.latDelta)
-        UserDefaults.standard.setLonDelta(value: cameraPosition.lonDelta)
+        if isMapReady{
+            UserDefaults.standard.setLatitude(value: cameraPosition.lat)
+            UserDefaults.standard.setLongitude(value: cameraPosition.lon)
+            UserDefaults.standard.setLatDelta(value: cameraPosition.latDelta)
+            UserDefaults.standard.setLonDelta(value: cameraPosition.lonDelta)
+        }
+        else{
+            isMapReady = true
+        }
     }
 }

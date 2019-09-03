@@ -8,6 +8,6 @@
 
 import Foundation
 
-struct PhotoSearchRequest:Codable {
+struct PhotoSearchRequest: Codable {
     let bbox: String
 }
