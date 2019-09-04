@@ -10,6 +10,7 @@ import Foundation
 
 struct FlickerPhotos: Codable {
     let photos: Photos
+    let stat: Int
 }
 
 struct Photos: Codable{
@@ -18,7 +19,6 @@ struct Photos: Codable{
     let perpage: Int
     let total: String
     let photo: [Photo]
-    
 }
 
 struct Photo: Codable{

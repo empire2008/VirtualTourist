@@ -88,15 +88,21 @@
                                                 <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="rKa-eI-zLX">
                                                     <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
                                                 </imageView>
+                                                <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="XEx-FG-jV0">
+                                                    <rect key="frame" x="15" y="15" width="20" height="20"/>
+                                                </activityIndicatorView>
                                             </subviews>
                                         </view>
                                         <constraints>
                                             <constraint firstItem="rKa-eI-zLX" firstAttribute="leading" secondItem="TO9-Y8-f0Z" secondAttribute="leading" id="I4K-Ed-FL1"/>
+                                            <constraint firstItem="XEx-FG-jV0" firstAttribute="centerY" secondItem="TO9-Y8-f0Z" secondAttribute="centerY" id="Svx-cA-GUx"/>
                                             <constraint firstAttribute="trailing" secondItem="rKa-eI-zLX" secondAttribute="trailing" id="TZm-to-FdH"/>
                                             <constraint firstItem="rKa-eI-zLX" firstAttribute="top" secondItem="TO9-Y8-f0Z" secondAttribute="top" id="nM2-6L-OmO"/>
+                                            <constraint firstItem="XEx-FG-jV0" firstAttribute="centerX" secondItem="TO9-Y8-f0Z" secondAttribute="centerX" id="oAZ-Cu-Hcy"/>
                                             <constraint firstAttribute="bottom" secondItem="rKa-eI-zLX" secondAttribute="bottom" id="sZK-NM-FhI"/>
                                         </constraints>
                                         <connections>
+                                            <outlet property="activityIndicator" destination="XEx-FG-jV0" id="RFL-F8-0Lm"/>
                                             <outlet property="image" destination="rKa-eI-zLX" id="Cxu-Eh-iMU"/>
                                         </connections>
                                     </collectionViewCell>
@@ -128,9 +134,9 @@
                                 <rect key="frame" x="0.0" y="813" width="414" height="49"/>
                                 <items>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="yfr-gh-gs9"/>
-                                    <barButtonItem title="Add Photo" id="c9A-Lc-SUN">
+                                    <barButtonItem title="New Collection" id="c9A-Lc-SUN">
                                         <connections>
-                                            <action selector="addPhotoButton:" destination="Mu9-7i-GtY" id="j9n-jl-FS8"/>
+                                            <action selector="newCollectionButton:" destination="Mu9-7i-GtY" id="j9n-jl-FS8"/>
                                         </connections>
                                     </barButtonItem>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="JW0-5C-Xgn"/>
