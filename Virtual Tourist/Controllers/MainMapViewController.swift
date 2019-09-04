@@ -109,7 +109,7 @@ extension MainMapViewController{
         pin.lat = annotation.coordinate.latitude
         pin.lon = annotation.coordinate.longitude
         pins.append(pin)
-        save()
+        dataController.saveContext()
     }
     
     func removePin(annotation: MKAnnotation){

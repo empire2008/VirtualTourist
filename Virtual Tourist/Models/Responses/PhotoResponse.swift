@@ -8,15 +8,14 @@
 
 import Foundation
 
-struct PhotoResponse: Codable {
+struct FlickerPhotos: Codable {
     let photos: Photos
-    let stat: String
 }
 
 struct Photos: Codable{
     let page: Int
-    let pages: String
-    let perpage: String
+    let pages: Int
+    let perpage: Int
     let total: String
     let photo: [Photo]
     
@@ -24,12 +23,12 @@ struct Photos: Codable{
 
 struct Photo: Codable{
     let id: String
-    let owner: String
-    let secret: String
-    let server: String
-    let farm: Int
     let title: String
-    let ispublic: Int
-    let isfriend: Int
-    let isfamily: Int
+    let url: String
+    
+    enum CodingKeys: String, CodingKey {
+        case id
+        case title
+        case url = "url_m"
+    }
 }

@@ -10,30 +10,53 @@ import UIKit
 import MapKit
 import CoreData
 
-class PhotoAlbumViewController: UIViewController {
+class PhotoAlbumViewController: UIViewController,NSFetchedResultsControllerDelegate {
 
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var collectionView: UICollectionView!
     
     var pinPoint: PinPoint!
     var dataController: DataController!
-    var photos: [Gallery] = []
+    var fetchedResultsController: NSFetchedResultsController<Gallery>!
+    
+    fileprivate func setupFetchedResultsController() {
+        let fetchRequest: NSFetchRequest<Gallery> = Gallery.fetchRequest()
+        let predicate = NSPredicate(format: "pinPoint = %@", pinPoint)
+        let sortDesciptor = NSSortDescriptor(key: "creationDate", ascending: true)
+        fetchRequest.predicate = predicate
+        fetchRequest.sortDescriptors = [sortDesciptor]
+        fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: dataController.viewContext, sectionNameKeyPath: nil, cacheName: nil)
+        fetchedResultsController.delegate = self
+        do{
+            try fetchedResultsController.performFetch()
+        }
+        catch{
+            fatalError("Fetched Error: \(error.localizedDescription)")
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         mapView.isUserInteractionEnabled = false
-        fetchedPhotos()
+//        fetchedPhotos()
+        setupFetchedResultsController()
         setupMapView()
         
         AppClient.requestPhoto(bbox: "23.33,37.74,24.42,38.8", complition: handlePhotosResponse(photoResponse:error:))
+        
+        
     }
     
-    func handlePhotosResponse(photoResponse: PhotoResponse?, error: Error?){
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        fetchedResultsController = nil
+    }
+    func handlePhotosResponse(photoResponse: FlickerPhotos?, error: Error?){
         if let photoResponse = photoResponse{
             print("Hello: \(photoResponse)")
         }
         else{
-            print("Error: \(error)")
+            print("Error: \(error?.localizedDescription ?? "")")
         }
     }
     
@@ -48,7 +71,7 @@ class PhotoAlbumViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        print("photos amount: \(photos.count)")
+//        print("photos amount: \(photos.count)")
     }
     
     func setupMapView(){
@@ -61,19 +84,17 @@ class PhotoAlbumViewController: UIViewController {
         mapView.setRegion(MKCoordinateRegion(center: center, span: span), animated: false)
     }
     
-    fileprivate func fetchedPhotos() {
-        let fetchRequest: NSFetchRequest<Gallery> = Gallery.fetchRequest()
-        let predicate = NSPredicate(format: "pinPoint = %@", pinPoint)
-        let sortDesciptor = NSSortDescriptor(key: "creationDate", ascending: true)
-        fetchRequest.predicate = predicate
-        fetchRequest.sortDescriptors = [sortDesciptor]
-        
-        if let result = try? dataController.viewContext.fetch(fetchRequest){
-            photos = result
-        }
-        
-        collectionView.reloadData()
-    }
+//    fileprivate func fetchedPhotos() {
+//        let fetchRequest: NSFetchRequest<Gallery> = Gallery.fetchRequest()
+//        let predicate = NSPredicate(format: "pinPoint = %@", pinPoint)
+//        let sortDesciptor = NSSortDescriptor(key: "creationDate", ascending: true)
+//        fetchRequest.predicate = predicate
+//        fetchRequest.sortDescriptors = [sortDesciptor]
+//
+//        if let result = try? dataController.viewContext.fetch(fetchRequest){
+//            photos = result
+//        }
+//    }
     
     @IBAction func addPhotoButton(_ sender: Any) {
         let alert = UIAlertController(title: "Add Photo Selection", message: nil, preferredStyle: .actionSheet)
@@ -120,8 +141,13 @@ class PhotoAlbumViewController: UIViewController {
         catch{
             print("Save Failed!")
         }
-        
-        self.fetchedPhotos()
+//        self.fetchedPhotos()
+    }
+    
+    func deletePhoto(indexPath: IndexPath){
+        let photoToDelete = fetchedResultsController.object(at: indexPath)
+        dataController.viewContext.delete(photoToDelete)
+        dataController.saveContext()
     }
 }
 
@@ -140,15 +166,21 @@ extension PhotoAlbumViewController: UIImagePickerControllerDelegate, UINavigatio
 }
 
 extension PhotoAlbumViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout{
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        // if fetchResultController.section = nil then return 1 otherwise
+        return fetchedResultsController.sections?.count ?? 1
+    }
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return photos.count
+        return fetchedResultsController.sections?[section].numberOfObjects ?? 0
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "GalleryCell", for: indexPath) as! GalleryCell
-        if let imageData = photos[indexPath.item].photo{
-            cell.image.image = UIImage(data: imageData)
-        }
+        let aPhoto = fetchedResultsController.object(at: indexPath)
+        cell.image.image = UIImage(data: aPhoto.photo!)
+//        if let imageData = photos[indexPath.item].photo{
+//            cell.image.image = UIImage(data: imageData)
+//        }
         return cell
     }
     

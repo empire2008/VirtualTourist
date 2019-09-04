@@ -29,7 +29,7 @@ class AppClient {
         }
     }
     
-    class func requestPhoto(bbox: String, complition: @escaping (PhotoResponse?, Error?) -> Void){
+    class func requestPhoto(bbox: String, complition: @escaping (FlickerPhotos?, Error?) -> Void){
         let photoRequest = PhotoSearchRequest(bbox: bbox)
         let body = try? JSONEncoder().encode(photoRequest)
         
@@ -46,7 +46,8 @@ class AppClient {
                 return
             }
             do{
-                let responseObject = try JSONDecoder().decode(PhotoResponse.self, from: data)
+                let responseObject = try JSONDecoder().decode(FlickerPhotos.self, from: data)
+                print(responseObject.photos.photo[0].url)
                 DispatchQueue.main.async {
                     complition(responseObject,nil)
                 }
