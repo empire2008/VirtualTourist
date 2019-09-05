@@ -10,7 +10,7 @@ import UIKit
 import MapKit
 import CoreData
 
-class PhotoAlbumViewController: UIViewController,NSFetchedResultsControllerDelegate {
+class PhotoAlbumViewController: UIViewController {
 
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var collectionView: UICollectionView!
@@ -22,7 +22,7 @@ class PhotoAlbumViewController: UIViewController,NSFetchedResultsControllerDeleg
     var page = 1
     var photoAmount = 0
     var photos: [Data] = []
-    
+    var blockOperations: [BlockOperation] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -64,8 +64,7 @@ class PhotoAlbumViewController: UIViewController,NSFetchedResultsControllerDeleg
                 for index in 0..<photoResponse.photos.photo.count{
                     let photoData = try? Data(contentsOf: URL(string: photoResponse.photos.photo[index].url)!)
                     if let photoData = photoData{
-                        self.photos.append(photoData)
-                        
+                        self.savePhoto(photoData)
                     }
                 }
             }
@@ -73,6 +72,13 @@ class PhotoAlbumViewController: UIViewController,NSFetchedResultsControllerDeleg
         else{
             print("Error: \(error?.localizedDescription ?? "")")
         }
+    }
+    
+    fileprivate func savePhoto(_ photoData: Data) {
+        let photoTosave = Gallery(context: self.dataController.viewContext)
+        photoTosave.photo = photoData
+        photoTosave.pinPoint = self.pinPoint
+        self.dataController.saveContext()
     }
     
     func boxAreaToString(lat: Double, lon: Double, area: Double) -> String{
@@ -95,7 +101,7 @@ class PhotoAlbumViewController: UIViewController,NSFetchedResultsControllerDeleg
     }
     
     @IBAction func newCollectionButton(_ sender: Any) {
-        
+        collectionView.reloadData()
     }
     
     @IBAction func backButton(_ sender: Any) {
@@ -174,5 +180,54 @@ extension PhotoAlbumViewController: UICollectionViewDelegate, UICollectionViewDa
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         return 0
+    }
+}
+
+extension PhotoAlbumViewController: NSFetchedResultsControllerDelegate{
+    func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        collectionView.performBatchUpdates({ () -> Void in
+            for operation: BlockOperation in self.blockOperations{
+                operation.start()
+            }
+        }) { (finished) -> Void in
+            self.blockOperations.removeAll(keepingCapacity: false)
+        }
+    }
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        for operation: BlockOperation in self.blockOperations{
+            operation.cancel()
+        }
+        
+        blockOperations.removeAll(keepingCapacity: false)
+    }
+    
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?){
+        switch type {
+        case .insert:
+            blockOperations.append(BlockOperation(block: { [weak self] in
+                if let self = self{
+                    self.collectionView.insertItems(at: [newIndexPath!])
+                }
+            }))
+        case .update:
+            blockOperations.append(BlockOperation(block: { [weak self] in
+                if let self = self{
+                    self.collectionView.reloadItems(at: [indexPath!])
+                }
+            }))
+        case .delete:
+            blockOperations.append(BlockOperation(block: { [weak self] in
+                if let self = self{
+                    self.collectionView.deleteItems(at: [indexPath!])
+                }
+            }))
+        case .move:
+            blockOperations.append(BlockOperation(block: { [weak self] in
+                if let self = self{
+                    self.collectionView.moveItem(at: indexPath!, to: newIndexPath!)
+                }
+            }))
+        default: break
+        }
     }
 }

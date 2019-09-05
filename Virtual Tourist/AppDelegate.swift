@@ -19,12 +19,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 
         dataController.load()
+  
+        let mainMapViewController = window?.rootViewController as! MainMapViewController
+        mainMapViewController.dataController = dataController
         
-        print("\(UserDefaults.standard.getLatitude()) \(UserDefaults.standard.getLongitude()) \(UserDefaults.standard.getLatDelta()) \(UserDefaults.standard.getLonDelta()))")
-        let mainStoryboard = UIStoryboard(name: "Main", bundle: nil)
-        let viewController = mainStoryboard.instantiateViewController(withIdentifier: "MainMapViewController") as! MainMapViewController
-        viewController.dataController = dataController
-        window?.rootViewController = viewController
+//        let mainStoryboard = UIStoryboard(name: "Main", bundle: nil)
+//        let viewController = mainStoryboard.instantiateViewController(withIdentifier: "MainMapViewController") as! MainMapViewController
+//        viewController.dataController = dataController
+//        window?.rootViewController = viewController
         return true
     }
     
