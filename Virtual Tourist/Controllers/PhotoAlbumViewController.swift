@@ -201,6 +201,30 @@ extension PhotoAlbumViewController: NSFetchedResultsControllerDelegate{
         blockOperations.removeAll(keepingCapacity: false)
     }
     
+//    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
+//        if type == NSFetchedResultsChangeType.insert{
+//            blockOperations.append(BlockOperation(block: { [weak self] in
+//                if let self = self{
+//                    self.collectionView.insertSections(NSIndexSet(index: sectionIndex) as IndexSet)
+//                }
+//            }))
+//        }
+//        else if type == NSFetchedResultsChangeType.update{
+//            blockOperations.append(BlockOperation(block: { [weak self] in
+//                if let self = self{
+//                    self.collectionView.reloadSections(NSIndexSet(index: sectionIndex) as IndexSet)
+//                }
+//            }))
+//        }
+//        else if type == NSFetchedResultsChangeType.delete{
+//            blockOperations.append(BlockOperation(block: { [weak self] in
+//                if let self = self{
+//                    self.collectionView.deleteSections(NSIndexSet(index: sectionIndex) as IndexSet)
+//                }
+//            }))
+//        }
+//    }
+    
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?){
         switch type {
         case .insert:
