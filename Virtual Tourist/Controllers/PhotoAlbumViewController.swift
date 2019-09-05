@@ -18,15 +18,18 @@ class PhotoAlbumViewController: UIViewController,NSFetchedResultsControllerDeleg
     var pinPoint: PinPoint!
     var dataController: DataController!
     var fetchedResultsController: NSFetchedResultsController<Gallery>!
+    let photoPerLoad = 25
+    var page = 1
+    var photoAmount = 0
+    var photos: [Data] = []
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
         mapView.isUserInteractionEnabled = false
 //        fetchedPhotos()
         setupMapView()
-        AppClient.requestPhoto(bbox: "23.33,37.74,24.42,38.8", complition: handlePhotosResponse(photoResponse:error:))
-        
-        
+        AppClient.requestPhoto(pinPoint: pinPoint, complition: handlePhotosResponse(photoResponse:error:))
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -57,7 +60,15 @@ class PhotoAlbumViewController: UIViewController,NSFetchedResultsControllerDeleg
     
     func handlePhotosResponse(photoResponse: FlickerPhotos?, error: Error?){
         if let photoResponse = photoResponse{
-            print("Hello: \(photoResponse)")
+            DispatchQueue.global(qos: .background).async {
+                for index in 0..<photoResponse.photos.photo.count{
+                    let photoData = try? Data(contentsOf: URL(string: photoResponse.photos.photo[index].url)!)
+                    if let photoData = photoData{
+                        self.photos.append(photoData)
+                        
+                    }
+                }
+            }
         }
         else{
             print("Error: \(error?.localizedDescription ?? "")")
@@ -91,11 +102,11 @@ class PhotoAlbumViewController: UIViewController,NSFetchedResultsControllerDeleg
         dismiss(animated: true, completion: nil)
     }
     
+    // MARK: Save to Data Model
     func save(imageData: Data){
         let photo = Gallery(context: dataController.viewContext)
         photo.creationDate = Date()
         photo.photo = imageData
-        
         photo.pinPoint = pinPoint
         
         do{
@@ -104,11 +115,6 @@ class PhotoAlbumViewController: UIViewController,NSFetchedResultsControllerDeleg
         catch{
             print("Save Failed!")
         }
-//        self.fetchedPhotos()
-    }
-    
-    func clearAllPhotos(){
-        
     }
     
     func deletePhoto(indexPath: IndexPath){
@@ -116,8 +122,20 @@ class PhotoAlbumViewController: UIViewController,NSFetchedResultsControllerDeleg
         dataController.viewContext.delete(photoToDelete)
         dataController.saveContext()
     }
+    
+    fileprivate func downloadPhoto(_ cell: GalleryCell) {
+        cell.activityIndicator.startAnimating()
+        DispatchQueue.global(qos: .background).async {
+            if let url = URL(string: "https://lh3.googleusercontent.com/16zRJrj3ae3G4kCDO9CeTHj_dyhCvQsUDU0VF0nZqHPGueg9A9ykdXTc6ds0TkgoE1eaNW-SLKlVrwDDZPE=s0#w=4800&h=3567"), let imageData = try? Data(contentsOf: url){
+                // save image data to model data
+                self.save(imageData: imageData)
+            }
+            
+        }
+    }
 }
 
+// MARK: Collection View configured
 extension PhotoAlbumViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout{
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         // if fetchResultController.section = nil then return 1 otherwise
@@ -130,7 +148,18 @@ extension PhotoAlbumViewController: UICollectionViewDelegate, UICollectionViewDa
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "GalleryCell", for: indexPath) as! GalleryCell
         let aPhoto = fetchedResultsController.object(at: indexPath)
-        cell.image.image = UIImage(data: aPhoto.photo!)
+        
+        downloadPhoto(cell)
+        
+        if aPhoto.photo != nil{
+            cell.activityIndicator.stopAnimating()
+            cell.imageOverlay.isHidden = true
+            cell.image.image = UIImage(data: aPhoto.photo!)
+        }
+        else{
+            cell.activityIndicator.startAnimating()
+            cell.imageOverlay.isHidden = false
+        }
         return cell
     }
     

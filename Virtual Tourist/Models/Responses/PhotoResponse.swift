@@ -10,7 +10,6 @@ import Foundation
 
 struct FlickerPhotos: Codable {
     let photos: Photos
-    let stat: Int
 }
 
 struct Photos: Codable{

@@ -88,22 +88,31 @@
                                                 <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="rKa-eI-zLX">
                                                     <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
                                                 </imageView>
+                                                <view alpha="0.5" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bGF-9M-YHm">
+                                                    <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
+                                                    <color key="backgroundColor" red="0.0" green="0.58980089430000004" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                </view>
                                                 <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="XEx-FG-jV0">
                                                     <rect key="frame" x="15" y="15" width="20" height="20"/>
                                                 </activityIndicatorView>
                                             </subviews>
                                         </view>
                                         <constraints>
+                                            <constraint firstItem="bGF-9M-YHm" firstAttribute="leading" secondItem="TO9-Y8-f0Z" secondAttribute="leading" id="1NQ-Wv-oHT"/>
+                                            <constraint firstItem="bGF-9M-YHm" firstAttribute="top" secondItem="TO9-Y8-f0Z" secondAttribute="top" id="HhP-Oc-qoQ"/>
                                             <constraint firstItem="rKa-eI-zLX" firstAttribute="leading" secondItem="TO9-Y8-f0Z" secondAttribute="leading" id="I4K-Ed-FL1"/>
                                             <constraint firstItem="XEx-FG-jV0" firstAttribute="centerY" secondItem="TO9-Y8-f0Z" secondAttribute="centerY" id="Svx-cA-GUx"/>
                                             <constraint firstAttribute="trailing" secondItem="rKa-eI-zLX" secondAttribute="trailing" id="TZm-to-FdH"/>
+                                            <constraint firstAttribute="bottom" secondItem="bGF-9M-YHm" secondAttribute="bottom" id="XGV-26-NGL"/>
                                             <constraint firstItem="rKa-eI-zLX" firstAttribute="top" secondItem="TO9-Y8-f0Z" secondAttribute="top" id="nM2-6L-OmO"/>
                                             <constraint firstItem="XEx-FG-jV0" firstAttribute="centerX" secondItem="TO9-Y8-f0Z" secondAttribute="centerX" id="oAZ-Cu-Hcy"/>
+                                            <constraint firstAttribute="trailing" secondItem="bGF-9M-YHm" secondAttribute="trailing" id="ofE-Ae-FcF"/>
                                             <constraint firstAttribute="bottom" secondItem="rKa-eI-zLX" secondAttribute="bottom" id="sZK-NM-FhI"/>
                                         </constraints>
                                         <connections>
                                             <outlet property="activityIndicator" destination="XEx-FG-jV0" id="RFL-F8-0Lm"/>
                                             <outlet property="image" destination="rKa-eI-zLX" id="Cxu-Eh-iMU"/>
+                                            <outlet property="imageOverlay" destination="bGF-9M-YHm" id="aVL-C3-5gp"/>
                                         </connections>
                                     </collectionViewCell>
                                 </cells>

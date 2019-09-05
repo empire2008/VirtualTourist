@@ -9,5 +9,13 @@
 import Foundation
 
 struct PhotoSearchRequest: Codable {
+    let page: Int
+    let perPage: Int
     let bbox: String
+    
+    enum CodingKeys: String, CodingKey {
+        case page
+        case perPage = "per_page"
+        case bbox
+    }
 }

@@ -112,8 +112,8 @@ extension MainMapViewController{
         dataController.saveContext()
     }
     
+    // MARK: Remove pin
     func removePin(annotation: MKAnnotation){
-        // do delete data
         let location = annotation.coordinate
         let selectedPinPoint = pins.first { pin in
             pin.lat == location.latitude && pin.lon == location.longitude
@@ -131,7 +131,7 @@ extension MainMapViewController{
         
     }
     
-    // Save the location and zoom level when the camera moved
+    // MARK: Save the location and zoom level when the camera moved
     func mapViewDidChangeVisibleRegion(_ mapView: MKMapView) {
         let center = mapView.camera.centerCoordinate
         cameraPosition.lat = center.latitude
@@ -142,7 +142,6 @@ extension MainMapViewController{
         timerToSave()
     }
     
-    // I don't know what it is but when I do like this then annotation do as I expected...
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         let reuseId = "pin"
         annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: reuseId)
