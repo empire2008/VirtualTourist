@@ -128,17 +128,6 @@ class PhotoAlbumViewController: UIViewController {
         dataController.viewContext.delete(photoToDelete)
         dataController.saveContext()
     }
-    
-    fileprivate func downloadPhoto(_ cell: GalleryCell) {
-        cell.activityIndicator.startAnimating()
-        DispatchQueue.global(qos: .background).async {
-            if let url = URL(string: "https://lh3.googleusercontent.com/16zRJrj3ae3G4kCDO9CeTHj_dyhCvQsUDU0VF0nZqHPGueg9A9ykdXTc6ds0TkgoE1eaNW-SLKlVrwDDZPE=s0#w=4800&h=3567"), let imageData = try? Data(contentsOf: url){
-                // save image data to model data
-                self.save(imageData: imageData)
-            }
-            
-        }
-    }
 }
 
 // MARK: Collection View configured
@@ -155,7 +144,7 @@ extension PhotoAlbumViewController: UICollectionViewDelegate, UICollectionViewDa
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "GalleryCell", for: indexPath) as! GalleryCell
         let aPhoto = fetchedResultsController.object(at: indexPath)
         
-        downloadPhoto(cell)
+//        downloadPhoto(cell)
         
         if aPhoto.photo != nil{
             cell.activityIndicator.stopAnimating()
@@ -187,18 +176,26 @@ extension PhotoAlbumViewController: NSFetchedResultsControllerDelegate{
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         collectionView.performBatchUpdates({ () -> Void in
             for operation: BlockOperation in self.blockOperations{
-                operation.start()
+                DispatchQueue.main.async {
+                    operation.start()
+                }
             }
         }) { (finished) -> Void in
-            self.blockOperations.removeAll(keepingCapacity: false)
+            DispatchQueue.main.async {
+                self.blockOperations.removeAll(keepingCapacity: false)
+            }
         }
     }
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         for operation: BlockOperation in self.blockOperations{
-            operation.cancel()
+            DispatchQueue.main.async {
+                operation.cancel()
+            }
         }
         
-        blockOperations.removeAll(keepingCapacity: false)
+        DispatchQueue.main.async {
+            self.blockOperations.removeAll(keepingCapacity: false)
+        }
     }
     
 //    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
@@ -230,25 +227,33 @@ extension PhotoAlbumViewController: NSFetchedResultsControllerDelegate{
         case .insert:
             blockOperations.append(BlockOperation(block: { [weak self] in
                 if let self = self{
-                    self.collectionView.insertItems(at: [newIndexPath!])
+                    DispatchQueue.main.async {
+                        self.collectionView.insertItems(at: [newIndexPath!])
+                    }
                 }
             }))
         case .update:
             blockOperations.append(BlockOperation(block: { [weak self] in
                 if let self = self{
-                    self.collectionView.reloadItems(at: [indexPath!])
+                    DispatchQueue.main.async {
+                        self.collectionView.reloadItems(at: [indexPath!])
+                    }
                 }
             }))
         case .delete:
             blockOperations.append(BlockOperation(block: { [weak self] in
                 if let self = self{
-                    self.collectionView.deleteItems(at: [indexPath!])
+                    DispatchQueue.main.async {
+                        self.collectionView.deleteItems(at: [indexPath!])
+                    }
                 }
             }))
         case .move:
             blockOperations.append(BlockOperation(block: { [weak self] in
                 if let self = self{
-                    self.collectionView.moveItem(at: indexPath!, to: newIndexPath!)
+                    DispatchQueue.main.async {
+                        self.collectionView.moveItem(at: indexPath!, to: newIndexPath!)
+                    }
                 }
             }))
         default: break
