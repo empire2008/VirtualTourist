@@ -17,12 +17,12 @@ class AppClient {
     enum Endpoint {
         static let baseUrl = "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=\(Auth.key)"
         case base
-        case fetchPhoto(Double, Double)
+        case fetchPhoto(Int, Double, Double)
         var stringValue: String{
             switch self {
             case .base: return Endpoint.baseUrl
-            case .fetchPhoto(let lat, let lon):
-                return Endpoint.baseUrl + "&bbox=\(getBbox(lat: lat, lon: lon))&extras=url_m&format=json&nojsoncallback=1&safe_search=1"
+            case .fetchPhoto(let page, let lat, let lon):
+                return Endpoint.baseUrl + "&page=\(page)&per_page=21&bbox=\(getBbox(lat: lat, lon: lon))&extras=url_m&format=json&nojsoncallback=1&safe_search=1"
             }
         }
         
@@ -40,9 +40,9 @@ class AppClient {
         }
     }
     
-    class func requestPhoto(pinPoint: PinPoint, complition: @escaping (FlickerPhotos?, Error?) -> Void){
+    class func requestPhoto(pinPoint: PinPoint, page: Int, complition: @escaping (FlickerPhotos?, Error?) -> Void){
         
-        let task = URLSession.shared.dataTask(with: Endpoint.fetchPhoto(pinPoint.lat, pinPoint.lon).url) { data, response, error in
+        let task = URLSession.shared.dataTask(with: Endpoint.fetchPhoto(page, pinPoint.lat, pinPoint.lon).url) { data, response, error in
             guard let data = data else{
                 DispatchQueue.main.async {
                     complition(nil, error)

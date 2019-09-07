@@ -23,18 +23,20 @@ class PhotoAlbumViewController: UIViewController {
     var photoAmount = 0
     var photos: [Data] = []
     var blockOperations: [BlockOperation] = []
+    var itemChanges = [NSFetchedResultsChangeType: IndexPath]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         mapView.isUserInteractionEnabled = false
-//        fetchedPhotos()
         setupMapView()
-        AppClient.requestPhoto(pinPoint: pinPoint, complition: handlePhotosResponse(photoResponse:error:))
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         setupFetchedResultsController()
+        if fetchedResultsController.sections?[0].numberOfObjects == 0{
+            AppClient.requestPhoto(pinPoint: pinPoint, page: page, complition: handlePhotosResponse(photoResponse:error:))
+        }
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -45,9 +47,9 @@ class PhotoAlbumViewController: UIViewController {
     fileprivate func setupFetchedResultsController() {
         let fetchRequest: NSFetchRequest<Gallery> = Gallery.fetchRequest()
         let predicate = NSPredicate(format: "pinPoint = %@", pinPoint)
-        let sortDesciptor = NSSortDescriptor(key: "creationDate", ascending: true)
+//        let sortDesciptor = NSSortDescriptor(key: "creationDate", ascending: true)
         fetchRequest.predicate = predicate
-        fetchRequest.sortDescriptors = [sortDesciptor]
+        fetchRequest.sortDescriptors = []
         fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: dataController.viewContext, sectionNameKeyPath: nil, cacheName: nil)
         fetchedResultsController.delegate = self
         do{
@@ -60,14 +62,18 @@ class PhotoAlbumViewController: UIViewController {
     
     func handlePhotosResponse(photoResponse: FlickerPhotos?, error: Error?){
         if let photoResponse = photoResponse{
-            DispatchQueue.global(qos: .background).async {
-                for index in 0..<photoResponse.photos.photo.count{
-                    let photoData = try? Data(contentsOf: URL(string: photoResponse.photos.photo[index].url)!)
-                    if let photoData = photoData{
-                        self.savePhoto(photoData)
-                    }
-                }
+            self.photoAmount = photoResponse.photos.photo.count
+            for _ in 0..<photoResponse.photos.photo.count{
+                self.saveMetaData()
             }
+//            DispatchQueue.global(qos: .background).async {
+//                for index in 0..<photoResponse.photos.photo.count{
+//                    let photoData = try? Data(contentsOf: URL(string: photoResponse.photos.photo[index].url)!)
+//                    if let photoData = photoData{
+//                        self.savePhoto(photoData)
+//                    }
+//                }
+//            }
         }
         else{
             print("Error: \(error?.localizedDescription ?? "")")
@@ -79,15 +85,6 @@ class PhotoAlbumViewController: UIViewController {
         photoTosave.photo = photoData
         photoTosave.pinPoint = self.pinPoint
         self.dataController.saveContext()
-    }
-    
-    func boxAreaToString(lat: Double, lon: Double, area: Double) -> String{
-        let minLat = lat - area
-        let maxLat = lat + area
-        let minLon = lon - area
-        let maxLon = lon + area
-        
-        return "\(minLon),\(minLat),\(maxLon),\(maxLat)"
     }
     
     func setupMapView(){
@@ -108,21 +105,21 @@ class PhotoAlbumViewController: UIViewController {
         dismiss(animated: true, completion: nil)
     }
     
-    // MARK: Save to Data Model
-    func save(imageData: Data){
-        let photo = Gallery(context: dataController.viewContext)
-        photo.creationDate = Date()
+    func savePhotoAt(imageData: Data, index: IndexPath){
+        let photo = fetchedResultsController.object(at: index)
         photo.photo = imageData
-        photo.pinPoint = pinPoint
-        
-        do{
-            try dataController.viewContext.save()
-        }
-        catch{
-            print("Save Failed!")
-        }
+        dataController.saveContext()
     }
     
+    // MARK: Save to Data Model
+    func saveMetaData(){
+        let photo = Gallery(context: dataController.viewContext)
+        photo.creationDate = Date()
+//        photo.photo = imageData
+        photo.pinPoint = pinPoint
+        dataController.saveContext()
+    
+    }
     func deletePhoto(indexPath: IndexPath){
         let photoToDelete = fetchedResultsController.object(at: indexPath)
         dataController.viewContext.delete(photoToDelete)
@@ -138,22 +135,31 @@ extension PhotoAlbumViewController: UICollectionViewDelegate, UICollectionViewDa
     }
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return fetchedResultsController.sections?[section].numberOfObjects ?? 0
+//        return photoAmount
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "GalleryCell", for: indexPath) as! GalleryCell
+        cell.activityIndicator.startAnimating()
+        cell.imageOverlay.isHidden = false
+        
         let aPhoto = fetchedResultsController.object(at: indexPath)
-        
-//        downloadPhoto(cell)
-        
-        if aPhoto.photo != nil{
+        if aPhoto.photo == nil{
+            AppClient.requestPhoto(pinPoint: pinPoint, page: page) { (photoResponse, error) in
+                if let photoResponse = photoResponse{
+                    DispatchQueue.global(qos: .background).async {
+                        let photoData = try? Data(contentsOf: URL(string: photoResponse.photos.photo[indexPath.item].url)!)
+                        if let photoData = photoData{
+                            self.savePhotoAt(imageData: photoData, index: indexPath)
+                        }
+                    }
+                }
+            }
+        }
+        else{
             cell.activityIndicator.stopAnimating()
             cell.imageOverlay.isHidden = true
             cell.image.image = UIImage(data: aPhoto.photo!)
-        }
-        else{
-            cell.activityIndicator.startAnimating()
-            cell.imageOverlay.isHidden = false
         }
         return cell
     }
@@ -173,90 +179,36 @@ extension PhotoAlbumViewController: UICollectionViewDelegate, UICollectionViewDa
 }
 
 extension PhotoAlbumViewController: NSFetchedResultsControllerDelegate{
-    func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        collectionView.performBatchUpdates({ () -> Void in
-            for operation: BlockOperation in self.blockOperations{
-                DispatchQueue.main.async {
-                    operation.start()
-                }
-            }
-        }) { (finished) -> Void in
-            DispatchQueue.main.async {
-                self.blockOperations.removeAll(keepingCapacity: false)
-            }
-        }
-    }
-    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        for operation: BlockOperation in self.blockOperations{
-            DispatchQueue.main.async {
-                operation.cancel()
-            }
-        }
-        
-        DispatchQueue.main.async {
-            self.blockOperations.removeAll(keepingCapacity: false)
-        }
-    }
-    
-//    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
-//        if type == NSFetchedResultsChangeType.insert{
-//            blockOperations.append(BlockOperation(block: { [weak self] in
-//                if let self = self{
-//                    self.collectionView.insertSections(NSIndexSet(index: sectionIndex) as IndexSet)
-//                }
-//            }))
-//        }
-//        else if type == NSFetchedResultsChangeType.update{
-//            blockOperations.append(BlockOperation(block: { [weak self] in
-//                if let self = self{
-//                    self.collectionView.reloadSections(NSIndexSet(index: sectionIndex) as IndexSet)
-//                }
-//            }))
-//        }
-//        else if type == NSFetchedResultsChangeType.delete{
-//            blockOperations.append(BlockOperation(block: { [weak self] in
-//                if let self = self{
-//                    self.collectionView.deleteSections(NSIndexSet(index: sectionIndex) as IndexSet)
-//                }
-//            }))
-//        }
-//    }
-    
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?){
         switch type {
         case .insert:
-            blockOperations.append(BlockOperation(block: { [weak self] in
-                if let self = self{
-                    DispatchQueue.main.async {
-                        self.collectionView.insertItems(at: [newIndexPath!])
-                    }
-                }
-            }))
+            itemChanges[type] = newIndexPath
         case .update:
-            blockOperations.append(BlockOperation(block: { [weak self] in
-                if let self = self{
-                    DispatchQueue.main.async {
-                        self.collectionView.reloadItems(at: [indexPath!])
-                    }
-                }
-            }))
+            itemChanges[type] = indexPath
         case .delete:
-            blockOperations.append(BlockOperation(block: { [weak self] in
-                if let self = self{
-                    DispatchQueue.main.async {
-                        self.collectionView.deleteItems(at: [indexPath!])
-                    }
-                }
-            }))
-        case .move:
-            blockOperations.append(BlockOperation(block: { [weak self] in
-                if let self = self{
-                    DispatchQueue.main.async {
-                        self.collectionView.moveItem(at: indexPath!, to: newIndexPath!)
-                    }
-                }
-            }))
-        default: break
+            itemChanges[type] = indexPath
+        default:
+            collectionView.reloadData()
+            break
         }
+    }
+    
+    func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        itemChanges.removeAll()
+    }
+    
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        collectionView.performBatchUpdates({
+            for (type, indexPath) in itemChanges{
+                switch type{
+                case .insert: self.collectionView.insertItems(at: [indexPath])
+                case .delete: self.collectionView.deleteItems(at: [indexPath])
+                case .update: self.collectionView.reloadItems(at: [indexPath])
+                default:
+                    collectionView.reloadData()
+                    break
+                }
+            }
+        }, completion: nil)
     }
 }
