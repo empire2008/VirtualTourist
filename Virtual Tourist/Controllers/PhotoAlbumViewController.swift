@@ -18,8 +18,8 @@ class PhotoAlbumViewController: UIViewController {
     var pinPoint: PinPoint!
     var dataController: DataController!
     var fetchedResultsController: NSFetchedResultsController<Gallery>!
-    let photoPerLoad = 25
     var page = 1
+    var maxPage = 1
     var photoAmount = 0
     var photos: [Data] = []
     var blockOperations: [BlockOperation] = []
@@ -35,7 +35,7 @@ class PhotoAlbumViewController: UIViewController {
         super.viewWillAppear(animated)
         setupFetchedResultsController()
         if fetchedResultsController.sections?[0].numberOfObjects == 0{
-            AppClient.requestPhoto(pinPoint: pinPoint, page: page, complition: handlePhotosResponse(photoResponse:error:))
+            requestPhoto()
         }
     }
     
@@ -60,9 +60,14 @@ class PhotoAlbumViewController: UIViewController {
         }
     }
     
+    func requestPhoto(){
+        AppClient.requestPhoto(pinPoint: pinPoint, page: page, complition: handlePhotosResponse(photoResponse:error:))
+    }
+    
     func handlePhotosResponse(photoResponse: FlickerPhotos?, error: Error?){
         if let photoResponse = photoResponse{
             self.photoAmount = photoResponse.photos.photo.count
+            self.maxPage = photoResponse.photos.pages
             for _ in 0..<photoResponse.photos.photo.count{
                 self.saveMetaData()
             }
@@ -98,7 +103,19 @@ class PhotoAlbumViewController: UIViewController {
     }
     
     @IBAction func newCollectionButton(_ sender: Any) {
-        collectionView.reloadData()
+        if page < maxPage{
+            page += 1
+        }
+        else{
+            page = 1
+        }
+        for data in fetchedResultsController!.fetchedObjects!{
+            dataController.viewContext.delete(data)
+        }
+        self.collectionView.reloadData()
+        requestPhoto()
+        fetchedResultsController = nil
+        setupFetchedResultsController()
     }
     
     @IBAction func backButton(_ sender: Any) {

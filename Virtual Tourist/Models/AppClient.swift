@@ -51,7 +51,6 @@ class AppClient {
             }
             do{
                 let responseObject = try JSONDecoder().decode(FlickerPhotos.self, from: data)
-                print(responseObject.photos.photo[0].url)
                 DispatchQueue.main.async {
                     complition(responseObject,nil)
                 }

@@ -13,4 +13,8 @@ class GalleryCell: UICollectionViewCell {
     @IBOutlet weak var image: UIImageView!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var imageOverlay: UIView!
+    
+    override func prepareForReuse() {
+        image.image = nil
+    }
 }
