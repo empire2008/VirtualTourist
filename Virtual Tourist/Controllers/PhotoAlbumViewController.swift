@@ -71,14 +71,6 @@ class PhotoAlbumViewController: UIViewController {
             for _ in 0..<photoResponse.photos.photo.count{
                 self.saveMetaData()
             }
-//            DispatchQueue.global(qos: .background).async {
-//                for index in 0..<photoResponse.photos.photo.count{
-//                    let photoData = try? Data(contentsOf: URL(string: photoResponse.photos.photo[index].url)!)
-//                    if let photoData = photoData{
-//                        self.savePhoto(photoData)
-//                    }
-//                }
-//            }
         }
         else{
             print("Error: \(error?.localizedDescription ?? "")")
@@ -164,11 +156,9 @@ extension PhotoAlbumViewController: UICollectionViewDelegate, UICollectionViewDa
         if aPhoto.photo == nil{
             AppClient.requestPhoto(pinPoint: pinPoint, page: page) { (photoResponse, error) in
                 if let photoResponse = photoResponse{
-                    DispatchQueue.global(qos: .background).async {
-                        let photoData = try? Data(contentsOf: URL(string: photoResponse.photos.photo[indexPath.item].url)!)
-                        if let photoData = photoData{
-                            self.savePhotoAt(imageData: photoData, index: indexPath)
-                        }
+                    let photoData = try? Data(contentsOf: URL(string: photoResponse.photos.photo[indexPath.item].url)!)
+                    if let photoData = photoData{
+                        self.savePhotoAt(imageData: photoData, index: indexPath)
                     }
                 }
             }
