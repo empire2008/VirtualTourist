@@ -18,6 +18,7 @@ class GalleryCell: UICollectionViewCell {
     
     override func prepareForReuse() {
         alpha = 1.0
+        selectedPhoto = false
         image.image = nil
     }
 }

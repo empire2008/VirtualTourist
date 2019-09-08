@@ -199,7 +199,12 @@ extension PhotoAlbumViewController: UICollectionViewDelegate, UICollectionViewDa
         for selectedIndexPath in selectedImages{
             if selectedIndexPath == indexPath{
                 cell.alpha = 0.2
-                break
+                cell.selectedPhoto = true
+            }
+            else{
+                if !cell.selectedPhoto{
+                    cell.alpha = 1.0
+                }
             }
         }
     }
@@ -224,14 +229,18 @@ extension PhotoAlbumViewController: UICollectionViewDelegate, UICollectionViewDa
     }
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let cell = collectionView.cellForItem(at: indexPath) as! GalleryCell
-        
-        if cell.selectedPhoto{
-            removeSelectedCell(cell: cell, indexPath: indexPath)
+        var isSelected = false
+        for selectedIndexPath in selectedImages{
+            if selectedIndexPath == indexPath{
+                removeSelectedCell(cell: cell, indexPath: indexPath)
+                isSelected = true
+                break
+            }
         }
-        else{
+        if !isSelected{
             addSelectCell(cell: cell, indexPath: indexPath)
         }
-        print(cell.selectedPhoto)
+        
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
