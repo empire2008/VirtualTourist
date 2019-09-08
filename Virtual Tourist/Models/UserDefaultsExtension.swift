@@ -13,6 +13,7 @@ enum UserDefaultsKeys: String{
     case lontitude
     case latDelta
     case lonDelta
+    case isNoData
 }
 
 extension UserDefaults{
@@ -42,5 +43,11 @@ extension UserDefaults{
     }
     func getLonDelta() -> Double{
         return double(forKey: UserDefaultsKeys.lonDelta.rawValue)
+    }
+    func setHasData(){
+        set(true, forKey: UserDefaultsKeys.isNoData.rawValue)
+    }
+    func isHasData() -> Bool{
+        return bool(forKey: UserDefaultsKeys.isNoData.rawValue)
     }
 }
