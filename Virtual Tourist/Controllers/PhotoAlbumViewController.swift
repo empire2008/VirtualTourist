@@ -177,6 +177,7 @@ extension PhotoAlbumViewController: UICollectionViewDelegate, UICollectionViewDa
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "GalleryCell", for: indexPath) as! GalleryCell
         cell.activityIndicator.startAnimating()
         cell.imageOverlay.isHidden = false
+        checkSelectPhoto(cell: cell, indexPath: indexPath)
         let aPhoto = fetchedResultsController.object(at: indexPath)
         if aPhoto.photo == nil{
             AppClient.requestImageFile(url: URL(string: aPhoto.photoUrl!)!) { (image, error) in
@@ -194,27 +195,25 @@ extension PhotoAlbumViewController: UICollectionViewDelegate, UICollectionViewDa
         
         return cell
     }
-    func checkSelectPhoto(cell: GalleryCell){
-        if cell.selectedPhoto{
-            cell.alpha = 0.2
-        }
-        else{
-            cell.alpha = 1.0
+    func checkSelectPhoto(cell: GalleryCell, indexPath: IndexPath){
+        for selectedIndexPath in selectedImages{
+            if selectedIndexPath == indexPath{
+                cell.alpha = 0.2
+                break
+            }
         }
     }
     func addSelectCell(cell: GalleryCell, indexPath: IndexPath){
-        cell.selectedPhoto = true
         selectedImages.append(indexPath)
         isOnSelectMode = true
         updateTitle()
-        checkSelectPhoto(cell: cell)
+        checkSelectPhoto(cell: cell, indexPath: indexPath)
     }
     func removeSelectedCell(cell: GalleryCell, indexPath: IndexPath){
         for index in 0..<selectedImages.count{
             if selectedImages[index] == indexPath{
                 selectedImages.remove(at: index)
-                cell.selectedPhoto = false
-                checkSelectPhoto(cell: cell)
+                checkSelectPhoto(cell: cell, indexPath: indexPath)
                 break
             }
         }
