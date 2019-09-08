@@ -121,6 +121,21 @@
                                     <outlet property="delegate" destination="Mu9-7i-GtY" id="hry-Gg-b8G"/>
                                 </connections>
                             </collectionView>
+                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="thP-ma-ypS">
+                                <rect key="frame" x="0.0" y="268" width="414" height="545"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No Photos" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DYY-ZJ-UX3">
+                                        <rect key="frame" x="158.5" y="260.5" width="97.5" height="24"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
+                                        <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstItem="DYY-ZJ-UX3" firstAttribute="centerX" secondItem="thP-ma-ypS" secondAttribute="centerX" id="XD6-7k-RDO"/>
+                                    <constraint firstItem="DYY-ZJ-UX3" firstAttribute="centerY" secondItem="thP-ma-ypS" secondAttribute="centerY" id="f80-ya-Lpe"/>
+                                </constraints>
+                            </view>
                             <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="l6W-iw-7To">
                                 <rect key="frame" x="0.0" y="88" width="414" height="180"/>
                                 <constraints>
@@ -162,10 +177,14 @@
                             <constraint firstItem="l6W-iw-7To" firstAttribute="leading" secondItem="90l-jX-ZTg" secondAttribute="leading" id="Pa8-u2-WUO"/>
                             <constraint firstItem="hDJ-RS-yyC" firstAttribute="leading" secondItem="90l-jX-ZTg" secondAttribute="leading" id="Pq3-R3-dt4"/>
                             <constraint firstItem="1Pi-v3-i7H" firstAttribute="bottom" secondItem="90l-jX-ZTg" secondAttribute="bottom" id="Z9Q-pK-Kmb"/>
+                            <constraint firstItem="thP-ma-ypS" firstAttribute="top" secondItem="l6W-iw-7To" secondAttribute="bottom" id="a1h-JW-XX0"/>
                             <constraint firstItem="l6W-iw-7To" firstAttribute="top" secondItem="hDJ-RS-yyC" secondAttribute="bottom" id="dSl-la-DiN"/>
+                            <constraint firstItem="1Pi-v3-i7H" firstAttribute="top" secondItem="thP-ma-ypS" secondAttribute="bottom" id="dZc-qk-bgg"/>
+                            <constraint firstItem="thP-ma-ypS" firstAttribute="leading" secondItem="90l-jX-ZTg" secondAttribute="leading" id="j3I-Hm-1u4"/>
                             <constraint firstItem="90l-jX-ZTg" firstAttribute="trailing" secondItem="l6W-iw-7To" secondAttribute="trailing" id="rA4-IK-aU0"/>
                             <constraint firstItem="90l-jX-ZTg" firstAttribute="trailing" secondItem="Dlw-gJ-gsX" secondAttribute="trailing" id="siO-2y-HkC"/>
                             <constraint firstItem="hDJ-RS-yyC" firstAttribute="top" secondItem="90l-jX-ZTg" secondAttribute="top" id="sjN-R0-Zf0"/>
+                            <constraint firstItem="90l-jX-ZTg" firstAttribute="trailing" secondItem="thP-ma-ypS" secondAttribute="trailing" id="uJi-oO-ddS"/>
                             <constraint firstItem="1Pi-v3-i7H" firstAttribute="top" secondItem="Dlw-gJ-gsX" secondAttribute="bottom" id="zF1-Oj-upE"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="90l-jX-ZTg"/>
@@ -173,6 +192,8 @@
                     <connections>
                         <outlet property="collectionView" destination="Dlw-gJ-gsX" id="mk4-YX-h2s"/>
                         <outlet property="mapView" destination="l6W-iw-7To" id="PdY-xF-1pZ"/>
+                        <outlet property="newCollectionButton" destination="c9A-Lc-SUN" id="TSf-5x-jMT"/>
+                        <outlet property="noPhotoView" destination="thP-ma-ypS" id="Djf-3X-1al"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="hfw-an-ifu" userLabel="First Responder" sceneMemberID="firstResponder"/>

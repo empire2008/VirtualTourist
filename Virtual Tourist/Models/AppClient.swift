@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 
 class AppClient {
     struct Auth {
@@ -59,6 +60,22 @@ class AppClient {
                 complition(nil, error)
             }
             
+        }
+        task.resume()
+    }
+    
+    class func requestImageFile(url: URL, complition: @escaping (UIImage?, Error?) -> Void) {
+        let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
+            guard let data = data else{
+                DispatchQueue.main.async {
+                    complition(nil, error)
+                }
+                return
+            }
+            let downloadImage = UIImage(data: data)
+            DispatchQueue.main.async {
+                complition(downloadImage, nil)
+            }
         }
         task.resume()
     }

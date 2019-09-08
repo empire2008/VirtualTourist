@@ -3,6 +3,7 @@
     <entity name="Gallery" representedClassName="Gallery" syncable="YES" codeGenerationType="class">
         <attribute name="creationDate" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="photo" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES" syncable="YES"/>
+        <attribute name="photoUrl" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="pinName" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="pinPoint" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="PinPoint" inverseName="galleries" inverseEntity="PinPoint" syncable="YES"/>
     </entity>
@@ -13,7 +14,7 @@
         <relationship name="galleries" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Gallery" inverseName="pinPoint" inverseEntity="Gallery" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Gallery" positionX="135.9140625" positionY="169.46484375" width="128" height="103"/>
+        <element name="Gallery" positionX="187.84375" positionY="154.05078125" width="128" height="118"/>
         <element name="PinPoint" positionX="-52.5390625" positionY="167.546875" width="128" height="103"/>
     </elements>
 </model>
