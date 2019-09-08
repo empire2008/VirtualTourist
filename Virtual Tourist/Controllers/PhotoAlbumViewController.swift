@@ -191,7 +191,7 @@ extension PhotoAlbumViewController: UICollectionViewDelegate, UICollectionViewDa
             cell.imageOverlay.isHidden = true
             cell.image.image = UIImage(data: aPhoto.photo!)
         }
-        checkSelectPhoto(cell: cell)
+        
         return cell
     }
     func checkSelectPhoto(cell: GalleryCell){
@@ -234,36 +234,6 @@ extension PhotoAlbumViewController: UICollectionViewDelegate, UICollectionViewDa
         }
         print(cell.selectedPhoto)
     }
-    
-//    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-//        let cell = collectionView.cellForItem(at: indexPath) as! GalleryCell
-//        if cell.image != nil{
-//            if cell.selectedPhoto{
-//                cell.selectedPhoto = false
-//                cell.image.alpha = 1.0
-//                for index in 0..<selectedImages.count{
-//                    if selectedImages[index] == indexPath{
-//                        selectedImages.remove(at: index)
-//                        break
-//                    }
-//                }
-//            }
-//            else{
-//                cell.selectedPhoto = true
-//                cell.image.alpha = 0.2
-//                selectedImages.append(indexPath)
-//            }
-//        }
-//
-//        if selectedImages != []{
-//            isOnSelectMode = true
-//            newCollectionButton.title = "Delete Photo"
-//        }
-//        else{
-//            isOnSelectMode = false
-//            newCollectionButton.title = "New Collection"
-//        }
-//    }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let size = (collectionView.frame.width / 3) - 4
