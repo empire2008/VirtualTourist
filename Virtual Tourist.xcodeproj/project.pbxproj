@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		8D0BACA0231A8AB200728CA4 /* GalleryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D0BAC9F231A8AB200728CA4 /* GalleryCell.swift */; };
+		8D14C2672325448F00468C09 /* SelectPhotoInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D14C2662325448F00468C09 /* SelectPhotoInfo.swift */; };
 		8D4546832314D11500DF7CCA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D4546822314D11500DF7CCA /* AppDelegate.swift */; };
 		8D4546882314D11500DF7CCA /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8D4546862314D11500DF7CCA /* Main.storyboard */; };
 		8D45468D2314D11600DF7CCA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8D45468C2314D11600DF7CCA /* Assets.xcassets */; };
@@ -25,6 +26,7 @@
 
 /* Begin PBXFileReference section */
 		8D0BAC9F231A8AB200728CA4 /* GalleryCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryCell.swift; sourceTree = "<group>"; };
+		8D14C2662325448F00468C09 /* SelectPhotoInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectPhotoInfo.swift; sourceTree = "<group>"; };
 		8D45467F2314D11400DF7CCA /* Virtual Tourist.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Virtual Tourist.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		8D4546822314D11500DF7CCA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		8D4546872314D11500DF7CCA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -111,6 +113,7 @@
 				8DFDC70D231E00B500AFFC68 /* AppClient.swift */,
 				8DFDC715231EAE4100AFFC68 /* UserDefaultsExtension.swift */,
 				8DFDC717231EB31900AFFC68 /* CameraStruct.swift */,
+				8D14C2662325448F00468C09 /* SelectPhotoInfo.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -220,6 +223,7 @@
 				8D4546A223152B9400DF7CCA /* PhotoAlbumViewController.swift in Sources */,
 				8DFDC716231EAE4100AFFC68 /* UserDefaultsExtension.swift in Sources */,
 				8DFDC711231E12BC00AFFC68 /* PhotoResponse.swift in Sources */,
+				8D14C2672325448F00468C09 /* SelectPhotoInfo.swift in Sources */,
 				8DFDC718231EB31900AFFC68 /* CameraStruct.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

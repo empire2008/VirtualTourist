@@ -26,7 +26,7 @@ class PhotoAlbumViewController: UIViewController {
     var photos: [Data] = []
     var blockOperations: [BlockOperation] = []
     var itemChanges = [NSFetchedResultsChangeType: IndexPath]()
-    var selectedImages: [IndexPath] = []
+    var selectedImages: [SelectPhotoInfo] = []
     var isOnSelectMode = false
     
     override func viewDidLoad() {
@@ -112,8 +112,8 @@ class PhotoAlbumViewController: UIViewController {
     
     @IBAction func newCollectionButton(_ sender: Any) {
         if isOnSelectMode{
-            for indexPath in selectedImages{
-                deletePhoto(indexPath: indexPath)
+            for selectedImage in selectedImages{
+                deletePhoto(indexPath: selectedImage.indexPath)
             }
             selectedImages = []
             isOnSelectMode = false
@@ -177,7 +177,6 @@ extension PhotoAlbumViewController: UICollectionViewDelegate, UICollectionViewDa
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "GalleryCell", for: indexPath) as! GalleryCell
         cell.activityIndicator.startAnimating()
         cell.imageOverlay.isHidden = false
-        checkSelectPhoto(cell: cell, indexPath: indexPath)
         let aPhoto = fetchedResultsController.object(at: indexPath)
         if aPhoto.photo == nil{
             AppClient.requestImageFile(url: URL(string: aPhoto.photoUrl!)!) { (image, error) in
@@ -192,55 +191,64 @@ extension PhotoAlbumViewController: UICollectionViewDelegate, UICollectionViewDa
             cell.imageOverlay.isHidden = true
             cell.image.image = UIImage(data: aPhoto.photo!)
         }
-        
+        updateCellSelection(cell: cell, isSelected: checkCellSelectStatus(indexPath: indexPath))
         return cell
     }
-    func checkSelectPhoto(cell: GalleryCell, indexPath: IndexPath){
-        for selectedIndexPath in selectedImages{
-            if selectedIndexPath == indexPath{
-                cell.alpha = 0.2
-                cell.selectedPhoto = true
-            }
-            else{
-                if !cell.selectedPhoto{
-                    cell.alpha = 1.0
-                }
+    
+    func checkCellSelectStatus(indexPath: IndexPath) -> Bool{
+        for selectCell in selectedImages{
+            if selectCell.indexPath == indexPath{
+                return true
             }
         }
+        return false
     }
-    func addSelectCell(cell: GalleryCell, indexPath: IndexPath){
-        selectedImages.append(indexPath)
-        isOnSelectMode = true
-        updateTitle()
-        checkSelectPhoto(cell: cell, indexPath: indexPath)
-    }
-    func removeSelectedCell(cell: GalleryCell, indexPath: IndexPath){
+    
+    fileprivate func removeSelectImage(_ indexPath: IndexPath) {
+        // remove
         for index in 0..<selectedImages.count{
-            if selectedImages[index] == indexPath{
+            if selectedImages[index].indexPath == indexPath{
                 selectedImages.remove(at: index)
-                checkSelectPhoto(cell: cell, indexPath: indexPath)
                 break
             }
         }
-        if selectedImages == []{
-            isOnSelectMode = false
-            updateTitle()
+    }
+    fileprivate func addSelectImage(_ indexPath: IndexPath) {
+        // add
+        var selectInfo = SelectPhotoInfo()
+        selectInfo.indexPath = indexPath
+        selectInfo.isSelected = true
+        selectedImages.append(selectInfo)
+    }
+    
+    func updateCellSelection(cell: GalleryCell,isSelected: Bool){
+        if isSelected{
+            cell.alpha = 0.2
         }
+        else{
+            cell.alpha = 1.0
+        }
+    }
+    func updateSelectionMode(){
+        if selectedImages.isEmpty{
+            isOnSelectMode = false
+        }
+        else{
+            isOnSelectMode = true
+        }
+        updateTitle()
     }
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let cell = collectionView.cellForItem(at: indexPath) as! GalleryCell
-        var isSelected = false
-        for selectedIndexPath in selectedImages{
-            if selectedIndexPath == indexPath{
-                removeSelectedCell(cell: cell, indexPath: indexPath)
-                isSelected = true
-                break
-            }
+        if !checkCellSelectStatus(indexPath: indexPath){
+            addSelectImage(indexPath)
+            updateCellSelection(cell: cell, isSelected: true)
         }
-        if !isSelected{
-            addSelectCell(cell: cell, indexPath: indexPath)
+        else{
+            removeSelectImage(indexPath)
+            updateCellSelection(cell: cell, isSelected: false)
         }
-        
+        updateSelectionMode()
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
