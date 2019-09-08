@@ -26,7 +26,7 @@ class PhotoAlbumViewController: UIViewController {
     var photos: [Data] = []
     var blockOperations: [BlockOperation] = []
     var itemChanges = [NSFetchedResultsChangeType: IndexPath]()
-    var selectedImages: [SelectPhotoInfo] = []
+    var selectedImages: [IndexPath] = []
     var isOnSelectMode = false
     
     override func viewDidLoad() {
@@ -113,7 +113,7 @@ class PhotoAlbumViewController: UIViewController {
     @IBAction func newCollectionButton(_ sender: Any) {
         if isOnSelectMode{
             for selectedImage in selectedImages{
-                deletePhoto(indexPath: selectedImage.indexPath)
+                deletePhoto(indexPath: selectedImage)
             }
             selectedImages = []
             isOnSelectMode = false
@@ -197,7 +197,7 @@ extension PhotoAlbumViewController: UICollectionViewDelegate, UICollectionViewDa
     
     func checkCellSelectStatus(indexPath: IndexPath) -> Bool{
         for selectCell in selectedImages{
-            if selectCell.indexPath == indexPath{
+            if selectCell == indexPath{
                 return true
             }
         }
@@ -207,7 +207,7 @@ extension PhotoAlbumViewController: UICollectionViewDelegate, UICollectionViewDa
     fileprivate func removeSelectImage(_ indexPath: IndexPath) {
         // remove
         for index in 0..<selectedImages.count{
-            if selectedImages[index].indexPath == indexPath{
+            if selectedImages[index] == indexPath{
                 selectedImages.remove(at: index)
                 break
             }
@@ -215,10 +215,7 @@ extension PhotoAlbumViewController: UICollectionViewDelegate, UICollectionViewDa
     }
     fileprivate func addSelectImage(_ indexPath: IndexPath) {
         // add
-        var selectInfo = SelectPhotoInfo()
-        selectInfo.indexPath = indexPath
-        selectInfo.isSelected = true
-        selectedImages.append(selectInfo)
+        selectedImages.append(indexPath)
     }
     
     func updateCellSelection(cell: GalleryCell,isSelected: Bool){

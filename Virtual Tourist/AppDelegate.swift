@@ -23,10 +23,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let mainMapViewController = window?.rootViewController as! MainMapViewController
         mainMapViewController.dataController = dataController
         
-//        let mainStoryboard = UIStoryboard(name: "Main", bundle: nil)
-//        let viewController = mainStoryboard.instantiateViewController(withIdentifier: "MainMapViewController") as! MainMapViewController
-//        viewController.dataController = dataController
-//        window?.rootViewController = viewController
         return true
     }
     
