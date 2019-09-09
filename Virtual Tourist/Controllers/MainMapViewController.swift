@@ -145,13 +145,17 @@ extension MainMapViewController{
     }
     // MARK: Save the location and zoom level when the camera moved
     func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
-        let center = mapView.camera.centerCoordinate
+        let center = mapView.centerCoordinate
         cameraPosition.lat = center.latitude
         cameraPosition.lon = center.longitude
         cameraPosition.latDelta = mapView.region.span.latitudeDelta
         cameraPosition.lonDelta = mapView.region.span.longitudeDelta
         
-        timerToSave()
+        UserDefaults.standard.setLatitude(value: cameraPosition.lat)
+        UserDefaults.standard.setLongitude(value: cameraPosition.lon)
+        UserDefaults.standard.setLatDelta(value: cameraPosition.latDelta)
+        UserDefaults.standard.setLonDelta(value: cameraPosition.lonDelta)
+        UserDefaults.standard.setHasData()
     }
     
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
@@ -196,30 +200,6 @@ extension MainMapViewController{
             let vc = segue.destination as! PhotoAlbumViewController
             vc.dataController = dataController
             vc.pinPoint = sender as? PinPoint
-        }
-    }
-}
-
-// MARK: Save Functions
-extension MainMapViewController{
-    // prevent from calling save every movement
-    func timerToSave(){
-        timer.invalidate()
-        timer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(save), userInfo: nil, repeats: false)
-    }
-    
-    @objc func save(){
-        if isMapReady{
-            UserDefaults.standard.setLatitude(value: cameraPosition.lat)
-            UserDefaults.standard.setLongitude(value: cameraPosition.lon)
-            UserDefaults.standard.setLatDelta(value: cameraPosition.latDelta)
-            UserDefaults.standard.setLonDelta(value: cameraPosition.lonDelta)
-            UserDefaults.standard.setHasData()
-            print("Location \(cameraPosition.lat), \(cameraPosition.lon)")
-            print("Zoom: \(cameraPosition.latDelta), \(cameraPosition.lonDelta)")
-        }
-        else{
-            isMapReady = true
         }
     }
 }
